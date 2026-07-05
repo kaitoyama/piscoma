@@ -1,0 +1,109 @@
+# ISUCOMA 開発環境: MySQL 8 / nginx / Go アプリの3コンテナ構成（v1: 1台構成 §10-3）
+# 起動: cd provisioning && docker compose up --build
+# 停止: docker compose down -v （-v で MySQL のデータボリュームも削除し、次回起動時に
+#       schema.sql / init/seed.sql が再適用されるようにする）
+
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: isucoma
+      MYSQL_DATABASE: isucoma
+      MYSQL_USER: isucoma
+      MYSQL_PASSWORD: isucoma
+      TZ: Asia/Tokyo
+    volumes:
+      # docker-entrypoint-initdb.d はファイル名の昇順に実行されるため、
+      # スキーマ→初期データの順になるよう連番プレフィックスを付ける。
+      - ../webapp/sql/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ../webapp/sql/init/seed.sql:/docker-entrypoint-initdb.d/02_seed.sql:ro
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306" # デバッグ用。本番相当の構成では外部公開しなくてよい
+    healthcheck:
+      # --protocol=TCP を明示する: initdb（初期データ投入）中の一時サーバーは
+      # ソケットのみで応答するため、ソケット経由の ping では投入完了前に
+      # healthy になってしまう（初期データが大きいほど顕在化する）。
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--protocol=TCP", "-uroot", "-pisucoma"]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+
+  webapp:
+    build:
+      context: ..
+      dockerfile: webapp/go/Dockerfile
+    environment:
+      ISUCOMA_DB_HOST: mysql
+      ISUCOMA_DB_PORT: "3306"
+      ISUCOMA_DB_USER: isucoma
+      ISUCOMA_DB_PASSWORD: isucoma
+      ISUCOMA_DB_NAME: isucoma
+      ISUCOMA_SQL_DIR: /webapp/sql
+      ISUCOMA_SESSION_SECRET: isucoma-dev-secret-change-me
+      ISUCOMA_LISTEN_PORT: "8080"
+      ISUCOMA_PAYMENT_URL: http://payment-mock:5000
+      TZ: Asia/Tokyo
+    depends_on:
+      mysql:
+        condition: service_healthy
+      payment-mock:
+        condition: service_healthy
+    healthcheck:
+      # curl/wget をイメージに追加せず、バイナリ自身の healthcheck サブコマンドで完結させる
+      test: ["CMD", "/usr/local/bin/isucoma-webapp", "healthcheck"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  payment-mock:
+    build:
+      context: ..
+      dockerfile: payment-mock/Dockerfile
+    environment:
+      PORT: "5000"
+      # 手元検証で失敗率を上げたい場合はここを上書きする（4.4 冪等性ストレステスト）。
+      # デフォルトは仕様書 §4.5 の1%のまま。
+      ISUCOMA_PAYMENT_FAILURE_RATE: "0.01"
+      ISUCOMA_PAYMENT_LATENCY_MS: "30"
+      TZ: Asia/Tokyo
+    ports:
+      - "5000:5000" # 着金記録の照会（GET /payments）を手元検証で使うため公開
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/payment-mock", "healthcheck"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  sweeper:
+    build:
+      context: ..
+      dockerfile: webapp/go/Dockerfile
+    # Dockerfile の ENTRYPOINT が既に /usr/local/bin/isucoma-webapp なので、
+    # command にはサブコマンド名だけを渡す（ENTRYPOINT + command が連結されてargvになる）。
+    command: ["sweep-loop"]
+    environment:
+      ISUCOMA_SWEEP_TARGET: http://webapp:8080/api/internal/sweep
+      ISUCOMA_SWEEP_INTERVAL: 5s
+      TZ: Asia/Tokyo
+    depends_on:
+      webapp:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:1.27
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      webapp:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/api/healthz"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  mysql_data:
