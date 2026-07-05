@@ -1,0 +1,29 @@
+name: release
+on:
+  push:
+    branches:
+      - claude/participant-distribution-release-kqf33u
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create release and upload assets
+        if: ${{ hashFiles('release-assets/bench-linux-amd64') != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view v0.1.0 >/dev/null 2>&1; then
+            echo "release v0.1.0 already exists; skipping"
+            exit 0
+          fi
+          gh release create v0.1.0 \
+            release-assets/bench-linux-amd64 \
+            release-assets/portal-linux-amd64 \
+            --target "$GITHUB_SHA" \
+            --title "v0.1.0" \
+            --latest \
+            --notes "ISUCOMA 初回リリース。bench-linux-amd64 / portal-linux-amd64 を添付。"
