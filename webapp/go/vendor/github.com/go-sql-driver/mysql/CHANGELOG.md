@@ -13,6 +13,7 @@
 * Enhance interpolateParams to correctly handle placeholders. (#1732)
   The question mark (?) within strings and comments will no longer be treated as a placeholder.
 
+
 ## v1.9.3 (2025-06-13)
 
 * `tx.Commit()` and `tx.Rollback()` returned `ErrInvalidConn` always.
@@ -22,9 +23,11 @@
   introduced by compression protocol support. (`#1707`)
 * Fix `db.Ping()` on compressed connection. (#1723)
 
+
 ## v1.9.2 (2025-04-07)
 
 v1.9.2 is a re-release of v1.9.1 due to a release process issue; no changes were made to the content.
+
 
 ## v1.9.1 (2025-03-21)
 
@@ -59,6 +62,7 @@ v1.9.2 is a re-release of v1.9.1 due to a release process issue; no changes were
 - Use `strconv.Atoi` to parse max_allowed_packet. (#1661)
 - `rejectReadOnly` option now handles ER_READ_ONLY_MODE (1290) error too. (#1660)
 
+
 ## Version 1.8.1 (2024-03-26)
 
 Bugfixes:
@@ -87,6 +91,7 @@ Major Changes:
   - Make TimeTruncate functional option by @methane in [1552](https://github.com/go-sql-driver/mysql/pull/1552)
   - Add BeforeConnect callback to configuration object by @ItalyPaleAle in [#1469](https://github.com/go-sql-driver/mysql/pull/1469)
 
+
 Other changes:
 
 - Adding DeregisterDialContext to prevent memory leaks with dialers we don't need anymore by @jypelle in https://github.com/go-sql-driver/mysql/pull/1422
@@ -112,6 +117,7 @@ Bugfixes:
 
   - Use SET syntax as specified in the MySQL documentation (#1402)
 
+
 ## Version 1.7 (2022-11-29)
 
 Changes:
@@ -131,6 +137,7 @@ New Features:
 Bugfixes:
 
   -  Fix parsing 0 year. (#1257)
+
 
 ## Version 1.6 (2021-04-01)
 
@@ -156,6 +163,7 @@ Bugfixes:
   - Put zero filler into the SSL handshake packet (#1066)
   - Fix checking cancelled connections back into the connection pool (#1095)
   - Fix remove last 0 byte for mysql_old_password when password is empty (#1133)
+
 
 ## Version 1.5 (2020-01-07)
 
@@ -183,6 +191,7 @@ Bugfixes:
   - Mark connections as bad on error during dial (#867)
   - Fix connection leak caused by rapid context cancellation (#1024)
   - Mark connections as bad on error during Conn.Prepare (#1030)
+
 
 ## Version 1.4.1 (2018-11-14)
 
@@ -242,6 +251,7 @@ Bugfixes:
  - Set correct capacity for []bytes read from length-encoded strings (#766)
  - Make RegisterDial concurrency-safe (#773)
 
+
 ## Version 1.3 (2016-12-01)
 
 Changes:
@@ -288,6 +298,7 @@ Bugfixes:
  - Invalidate connection on error while discarding additional results (#513)
  - Allow terminating packets of length 0 (#516)
 
+
 ## Version 1.2 (2014-06-03)
 
 Changes:
@@ -318,6 +329,7 @@ Bugfixes:
  - Fixed TestConcurrent test to pass Go's race detection
  - Fixed appendLengthEncodedInteger for large numbers
  - Renamed readLengthEnodedString to readLengthEncodedString and skipLengthEnodedString to skipLengthEncodedString (fixed typo)
+
 
 ## Version 1.1 (2013-11-02)
 
@@ -354,6 +366,7 @@ Bugfixes:
   - Avoid panics on reuse of closed connections
   - Fixed empty string producing false nil values
   - Fixed sign byte for positive TIME fields
+
 
 ## Version 1.0 (2013-05-14)
 

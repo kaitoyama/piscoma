@@ -67,6 +67,7 @@ Below is an example which shows some common use cases for sqlx.  Check
 [sqlx_test.go](https://github.com/jmoiron/sqlx/blob/master/sqlx_test.go) for more
 usage.
 
+
 ```go
 package main
 
