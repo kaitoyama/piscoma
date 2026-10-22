@@ -34,10 +34,12 @@ BenchmarkFastTemplateExecuteString-4    	 3000000	       572 ns/op	     144 B/op
 BenchmarkFastTemplateExecuteTagFunc-4   	 2000000	       743 ns/op	     144 B/op	       3 allocs/op
 ```
 
+
 Docs
 ====
 
 See http://godoc.org/github.com/valyala/fasttemplate .
+
 
 Usage
 =====
@@ -55,6 +57,7 @@ Usage
 	// Output:
 	// http://google.com/?q=hello%3Dworld&foo=foobarfoobar
 ```
+
 
 Advanced usage
 ==============

@@ -160,6 +160,7 @@ The merge is performed in the following steps:
 2. Write this common code to the merged file.
 3. Remove the common code from all architecture-specific files.
 
+
 ## Generated files
 
 ### `zerrors_${GOOS}_${GOARCH}.go`

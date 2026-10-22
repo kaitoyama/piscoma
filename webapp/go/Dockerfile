@@ -4,7 +4,7 @@
 # webapp/sql を同じイメージに焼き込み、ISUCOMA_SQL_DIR のデフォルト値 /webapp/sql と
 # パスを一致させる（POST /api/initialize がここから初期データを読み込む）。
 
-FROM golang:1.24 AS build
+FROM golang:1.25 AS build
 WORKDIR /src
 
 # 依存モジュールは webapp/go/vendor/ にベンダリング済み（`go mod vendor` で生成）。

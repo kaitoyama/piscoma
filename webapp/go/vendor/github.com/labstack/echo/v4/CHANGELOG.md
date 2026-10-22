@@ -12,11 +12,13 @@
 
 * Update dependencies for [GO-2025-3487](https://pkg.go.dev/vuln/GO-2025-3487), [GO-2025-3503](https://pkg.go.dev/vuln/GO-2025-3503) and [GO-2025-3595](https://pkg.go.dev/vuln/GO-2025-3595) in https://github.com/labstack/echo/pull/2780
 
+
 ## v4.13.3 - 2024-12-19
 
 **Security**
 
 * Update golang.org/x/net dependency [GO-2024-3333](https://pkg.go.dev/vuln/GO-2024-3333) in https://github.com/labstack/echo/pull/2722
+
 
 ## v4.13.2 - 2024-12-12
 
@@ -24,11 +26,14 @@
 
 * Update dependencies (dependabot reports [GO-2024-3321](https://pkg.go.dev/vuln/GO-2024-3321)) in https://github.com/labstack/echo/pull/2721
 
+
 ## v4.13.1 - 2024-12-11
 
 **Fixes**
 
 * Fix BindBody ignoring `Transfer-Encoding: chunked` requests by @178inaba in https://github.com/labstack/echo/pull/2717
+
+
 
 ## v4.13.0 - 2024-12-04
 
@@ -37,6 +42,7 @@
 The JWT middleware has been **removed from Echo core** due to another security vulnerability, [CVE-2024-51744](https://nvd.nist.gov/vuln/detail/CVE-2024-51744). For more details, refer to issue [#2699](https://github.com/labstack/echo/issues/2699). A drop-in replacement is available in the [labstack/echo-jwt](https://github.com/labstack/echo-jwt) repository.
 
 **Important**: Direct assignments like `token := c.Get("user").(*jwt.Token)` will now cause a panic due to an invalid cast. Update your code accordingly. Replace the current imports from `"github.com/golang-jwt/jwt"` in your handlers to the new middleware version using `"github.com/golang-jwt/jwt/v5"`.
+
 
 Background: 
 
@@ -60,11 +66,13 @@ We sincerely apologize for any inconvenience caused by this change. While we str
 * CORS middleware should compile allowOrigin regexp at creation by @aldas in https://github.com/labstack/echo/pull/2709
 * Shorten Github issue template and add test example by @aldas in https://github.com/labstack/echo/pull/2711
 
+
 ## v4.12.0 - 2024-04-15
 
 **Security**
 
 * Update golang.org/x/net dep because of [GO-2024-2687](https://pkg.go.dev/vuln/GO-2024-2687) by @aldas in https://github.com/labstack/echo/pull/2625
+
 
 **Enhancements**
 
@@ -89,6 +97,7 @@ We sincerely apologize for any inconvenience caused by this change. While we str
 * When route is registered with empty path it is normalized to `/`.  by @aldas in https://github.com/labstack/echo/pull/2616
 * proxy middleware should use httputil.ReverseProxy for SSE requests by @aldas in https://github.com/labstack/echo/pull/2624
 
+
 ## v4.11.4 - 2023-12-20
 
 **Security**
@@ -99,6 +108,7 @@ We sincerely apologize for any inconvenience caused by this change. While we str
 
 * Update deps and mark Go version to 1.18 as this is what golang.org/x/* use [#2563](https://github.com/labstack/echo/pull/2563)
 * Request logger: add example for Slog https://pkg.go.dev/log/slog [#2543](https://github.com/labstack/echo/pull/2543)
+
 
 ## v4.11.3 - 2023-11-07
 
@@ -111,6 +121,7 @@ We sincerely apologize for any inconvenience caused by this change. While we str
 * Tests: refactor context tests to be separate functions [#2540](https://github.com/labstack/echo/pull/2540)
 * Proxy middleware: reuse echo request context [#2537](https://github.com/labstack/echo/pull/2537)
 * Mark unmarshallable yaml struct tags as ignored [#2536](https://github.com/labstack/echo/pull/2536)
+
 
 ## v4.11.2 - 2023-10-11
 
@@ -134,7 +145,9 @@ We sincerely apologize for any inconvenience caused by this change. While we str
 
 * Fix `Gzip` middleware not sending response code for no content responses (404, 301/302 redirects etc) [#2481](https://github.com/labstack/echo/pull/2481)
 
+
 ## v4.11.0 - 2023-07-14
+
 
 **Fixes**
 
@@ -142,6 +155,7 @@ We sincerely apologize for any inconvenience caused by this change. While we str
 * Fix `group.RouteNotFound` not working when group has attached middlewares [#2411](https://github.com/labstack/echo/pull/2411)
 * Fix global error handler return error message when message is an error [#2456](https://github.com/labstack/echo/pull/2456)
 * Do not use global timeNow variables [#2477](https://github.com/labstack/echo/pull/2477)
+
 
 **Enhancements**
 
@@ -157,6 +171,7 @@ We sincerely apologize for any inconvenience caused by this change. While we str
 * gzip response only if it exceeds a minimal length [#2267](https://github.com/labstack/echo/pull/2267)
 * Upgrade packages [#2475](https://github.com/labstack/echo/pull/2475)
 
+
 ## v4.10.2 - 2023-02-22
 
 **Security**
@@ -168,11 +183,13 @@ We sincerely apologize for any inconvenience caused by this change. While we str
 
 * Add more HTTP error values [#2277](https://github.com/labstack/echo/pull/2277)
 
+
 ## v4.10.1 - 2023-02-19
 
 **Security**
 
 * Upgrade deps due to the latest golang.org/x/net vulnerability [#2402](https://github.com/labstack/echo/pull/2402)
+
 
 **Enhancements**
 
@@ -180,6 +197,7 @@ We sincerely apologize for any inconvenience caused by this change. While we str
 * Return an empty string for ctx.path if there is no registered path [#2385](https://github.com/labstack/echo/pull/2385)
 * Add context timeout middleware [#2380](https://github.com/labstack/echo/pull/2380)
 * Update link to jaegertracing [#2394](https://github.com/labstack/echo/pull/2394)
+
 
 ## v4.10.0 - 2022-12-27
 
@@ -194,6 +212,7 @@ which we can not do in Echo core because this would break backwards compatibilit
   several vulnerabilities fixed in these libraries.
 
   Echo still tries to support last 4 Go versions but there are occasions we can not guarantee this promise.
+
 
 **Enhancements**
 
@@ -215,6 +234,7 @@ which we can not do in Echo core because this would break backwards compatibilit
 * Add govulncheck to CI and bump dependencies [#2362](https://github.com/labstack/echo/pull/2362)
 * Fix rate limiter docs [#2366](https://github.com/labstack/echo/pull/2366)
 * Refactor how `e.Routes()` work and introduce `e.OnAddRouteHandler` callback [#2337](https://github.com/labstack/echo/pull/2337)
+
 
 ## v4.9.1 - 2022-10-12
 
@@ -240,6 +260,7 @@ which we can not do in Echo core because this would break backwards compatibilit
 
 * Allow configuring ErrorHandler in CSRF middleware [#2257](https://github.com/labstack/echo/pull/2257)
 * Replace HTTP method constants in tests with stdlib constants [#2247](https://github.com/labstack/echo/pull/2247)
+
 
 ## v4.8.0 - 2022-08-10
 
@@ -284,6 +305,7 @@ g.RouteNotFound("/*", func(c echo.Context) error { return c.NoContent(http.Statu
 
 * Recover middleware should not log panic for aborted handler [#2134](https://github.com/labstack/echo/pull/2134)
 
+
 ## v4.7.1 - 2022-03-13
 
 **Fixes**
@@ -293,6 +315,7 @@ g.RouteNotFound("/*", func(c echo.Context) error { return c.NoContent(http.Statu
 **Enhancements**
 
 * Remove some unused code [#2116](https://github.com/labstack/echo/pull/2116)
+
 
 ## v4.7.0 - 2022-03-01
 
@@ -321,6 +344,7 @@ g.RouteNotFound("/*", func(c echo.Context) error { return c.NoContent(http.Statu
 
 * Fixed Echo version number in greeting message which was not incremented to `4.6.2` [#2066](https://github.com/labstack/echo/issues/2066)
 
+
 ## v4.6.2 - 2022-01-08
 
 **Fixes**
@@ -329,11 +353,13 @@ g.RouteNotFound("/*", func(c echo.Context) error { return c.NoContent(http.Statu
 * Fixed a problem that returned wrong content-encoding when the gzip compressed content was empty. [#1921](https://github.com/labstack/echo/pull/1921)
 * Update (test) dependencies [#2021](https://github.com/labstack/echo/pull/2021)
 
+
 **Enhancements**
 
 * Add support for configurable target header for the request_id middleware [#2040](https://github.com/labstack/echo/pull/2040)
 * Change decompress middleware to use stream decompression instead of buffering [#2018](https://github.com/labstack/echo/pull/2018)
 * Documentation updates
+
 
 ## v4.6.1 - 2021-09-26
 
