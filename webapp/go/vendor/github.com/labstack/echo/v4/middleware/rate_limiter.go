@@ -4,6 +4,7 @@
 package middleware
 
 import (
+	"math"
 	"net/http"
 	"sync"
 	"time"
@@ -41,7 +42,9 @@ var ErrRateLimitExceeded = echo.NewHTTPError(http.StatusTooManyRequests, "rate l
 // ErrExtractorError denotes an error raised when extractor function is unsuccessful
 var ErrExtractorError = echo.NewHTTPError(http.StatusForbidden, "error while extracting identifier")
 
-// DefaultRateLimiterConfig defines default values for RateLimiterConfig
+// DefaultRateLimiterConfig defines default values for RateLimiterConfig.
+// The default identifier uses Context.RealIP(). Configure Echo#IPExtractor for
+// trusted proxies to keep clients behind a proxy in separate rate-limit buckets.
 var DefaultRateLimiterConfig = RateLimiterConfig{
 	Skipper: DefaultSkipper,
 	IdentifierExtractor: func(ctx echo.Context) (string, error) {
@@ -215,7 +218,7 @@ func NewRateLimiterMemoryStoreWithConfig(config RateLimiterMemoryStoreConfig) (s
 		store.expiresIn = DefaultRateLimiterMemoryStoreConfig.ExpiresIn
 	}
 	if config.Burst == 0 {
-		store.burst = int(config.Rate)
+		store.burst = int(math.Max(1, math.Ceil(float64(config.Rate))))
 	}
 	store.visitors = make(map[string]*Visitor)
 	store.timeNow = time.Now
@@ -249,8 +252,9 @@ func (store *RateLimiterMemoryStore) Allow(identifier string) (bool, error) {
 	if now.Sub(store.lastCleanup) > store.expiresIn {
 		store.cleanupStaleVisitors()
 	}
+	allowed := limiter.AllowN(now, 1)
 	store.mutex.Unlock()
-	return limiter.AllowN(store.timeNow(), 1), nil
+	return allowed, nil
 }
 
 /*
